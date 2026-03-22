@@ -1,0 +1,12 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes: 
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
+
+#to run this just run { docker compose up -d }
