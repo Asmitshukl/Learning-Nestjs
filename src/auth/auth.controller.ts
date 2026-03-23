@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registeruser.dto';
+import { AuthGuard } from './auth.guard';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
@@ -11,12 +13,31 @@ export class AuthController {
     // }
     
     //method 2 
-    constructor(private readonly authservice :AuthService){}
+    constructor(private readonly authservice :AuthService,
+        private readonly userservice :UserService
+    ){}
     //pick and choose from both the methods
 
     @Post('register')
     register(@Body() registeruserDto:RegisterDto){
-        return this.authservice.registerUser(registeruserDto);
+        
+        const result=this.authservice.registerUser(registeruserDto);
+        return {message:result}
+    }
+
+
+    @UseGuards(AuthGuard)
+    @Get('profile')
+    async getprofile(@Request() req){
+
+        const userId=req.user.sub;
+        const user = await this.userservice.getuserById(userId);
+
+        if(!user){
+            return {message:"there is some error occured"}
+        }
+
+        return {message: user};
     }
 }
 

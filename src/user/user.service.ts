@@ -25,7 +25,11 @@ export class UserService {
             lname:registeruserDto.lname,
             email:registeruserDto.email,
             password:registeruserDto.password
-            
+
         });
+    }
+
+    async getuserById(id:string){
+        return await this.usermodel.findOne({_id : id});
     }
 }
